@@ -7,11 +7,15 @@ import {
 } from '../core/service_client';
 import { HttpClientException } from './http_client_exception';
 
+export type FetchFn = (url: string, init?: RequestInit) => Promise<Response>;
+
 export class HttpServiceClient implements ServiceClient {
   private readonly config: ServiceClientConfig;
+  private readonly fetchFn: FetchFn;
 
-  constructor(config: ServiceClientConfig) {
+  constructor(config: ServiceClientConfig, options?: { fetch?: FetchFn }) {
     this.config = config;
+    this.fetchFn = options?.fetch ?? globalThis.fetch.bind(globalThis);
   }
 
   async send(request: ServiceRequest): Promise<ServiceResponse> {
@@ -35,7 +39,7 @@ export class HttpServiceClient implements ServiceClient {
     const timer = setTimeout(() => controller.abort(), this.config.timeout);
 
     try {
-      const response = await fetch(url.toString(), {
+      const response = await this.fetchFn(url.toString(), {
         method: request.method.toUpperCase(),
         headers: effectiveHeaders,
         body: encodedBody,

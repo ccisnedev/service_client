@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/)
 and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] - 2026-04-28
+
+### Added
+
+- Client injection tests for `HttpServiceClient` (3 new tests)
+
+### Changed
+
+- Repository transferred to `ccisnedev/service_client`
+- Monorepo restructure: Dart SDK moved to `code/dart/`
+
 ## [0.2.0] - 2026-03-16
 
 ### Deprecated

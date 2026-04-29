@@ -1,6 +1,6 @@
 {
   "name": "@macss/service-client",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Service client abstraction with the Result pattern for TypeScript. Transport-agnostic interface with an HTTP implementation.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,7 +14,8 @@
     "dev": "ts-node src/index.ts",
     "test": "vitest run",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
     "service-client",
@@ -26,13 +27,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/macss-dev/service_client.git",
+    "url": "git+https://github.com/ccisnedev/service_client.git",
     "directory": "code/ts"
   },
   "bugs": {
-    "url": "https://github.com/macss-dev/service_client/issues"
+    "url": "https://github.com/ccisnedev/service_client/issues"
   },
-  "homepage": "https://github.com/macss-dev/service_client/tree/main/code/ts#readme",
+  "homepage": "https://github.com/ccisnedev/service_client/tree/main/code/ts#readme",
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^22.19.11",

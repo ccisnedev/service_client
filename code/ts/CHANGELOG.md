@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format loosely follows [Keep a Changelog](https://keepachangelog.com/)
 and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] — 2026-04-28
+
+### Added
+
+- Optional `fetch` parameter in `HttpServiceClient` constructor for dependency injection in tests
+- `FetchFn` type export for typing custom fetch implementations
+- `prepublishOnly` script — runs `build` + `test` before `npm publish`
+- Client injection tests (3 new tests)
+
+### Changed
+
+- Repository transferred to `ccisnedev/service_client`
+
 ## [0.2.0] — 2025-07-11
 
 ### Added

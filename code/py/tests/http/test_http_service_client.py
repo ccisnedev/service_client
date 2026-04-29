@@ -322,3 +322,61 @@ class TestHttpServiceClient:
         client = HttpServiceClient(config, client=httpx.AsyncClient(transport=transport))
 
         await client.close()  # Should not raise
+
+
+class TestClientInjection:
+    """Tests para validar inyección de cliente para testing."""
+
+    @pytest.mark.asyncio
+    async def test_accepts_injected_httpx_client(
+        self, config: ServiceClientConfig
+    ) -> None:
+        async def handler(_: httpx.Request) -> httpx.Response:
+            return _mock_response(json.dumps({"id": 1}), 200)
+
+        transport = httpx.MockTransport(handler)
+        injected = httpx.AsyncClient(transport=transport)
+        client = HttpServiceClient(config, client=injected)
+
+        response = await client.send(
+            ServiceRequest.http(method="GET", endpoint="todos/1")
+        )
+
+        assert response.status_code == 200
+        assert response.data == {"id": 1}
+
+    @pytest.mark.asyncio
+    async def test_injected_client_receives_correct_url_and_headers(
+        self, config: ServiceClientConfig
+    ) -> None:
+        captured_request: httpx.Request | None = None
+
+        async def handler(request: httpx.Request) -> httpx.Response:
+            nonlocal captured_request
+            captured_request = request
+            return _mock_response("{}", 200)
+
+        transport = httpx.MockTransport(handler)
+        client = HttpServiceClient(config, client=httpx.AsyncClient(transport=transport))
+
+        await client.send(
+            ServiceRequest.http(
+                method="POST",
+                endpoint="todos",
+                body={"title": "Test"},
+                headers={"Authorization": "Bearer token"},
+            )
+        )
+
+        assert captured_request is not None
+        assert str(captured_request.url) == "https://api.example.com/v1/todos"
+        assert captured_request.headers["authorization"] == "Bearer token"
+        assert json.loads(captured_request.content) == {"title": "Test"}
+
+    @pytest.mark.asyncio
+    async def test_uses_default_client_when_no_injection(
+        self, config: ServiceClientConfig
+    ) -> None:
+        # HttpServiceClient without client kwarg should not raise on construction
+        client = HttpServiceClient(config)
+        assert client is not None

@@ -296,5 +296,53 @@ void main() {
       // Verify close() completes without error
       await client.close();
     });
+
+    group('client injection', () {
+      test('accepts an injected http.Client', () async {
+        final mockClient = MockClient((_) async {
+          return http.Response(jsonEncode({'id': 1}), 200);
+        });
+
+        final client = HttpServiceClient(config, client: mockClient);
+        final response = await client.send(ServiceRequest.http(
+          method: 'GET',
+          endpoint: 'todos/1',
+        ));
+
+        expect(response.statusCode, 200);
+        expect(response.data, {'id': 1});
+      });
+
+      test('injected client receives correct URL and headers', () async {
+        Uri? capturedUrl;
+        Map<String, String>? capturedHeaders;
+        String? capturedBody;
+
+        final mockClient = MockClient((request) async {
+          capturedUrl = request.url;
+          capturedHeaders = request.headers;
+          capturedBody = request.body;
+          return http.Response('{}', 200);
+        });
+
+        final client = HttpServiceClient(config, client: mockClient);
+        await client.send(ServiceRequest.http(
+          method: 'POST',
+          endpoint: 'todos',
+          body: {'title': 'Test'},
+          headers: {'Authorization': 'Bearer token'},
+        ));
+
+        expect(capturedUrl.toString(), 'https://api.example.com/v1/todos');
+        expect(capturedHeaders!['authorization'], 'Bearer token');
+        expect(jsonDecode(capturedBody!), {'title': 'Test'});
+      });
+
+      test('uses default http.Client when no injection is provided', () async {
+        // HttpServiceClient without client param should not throw on construction
+        final client = HttpServiceClient(config);
+        expect(client, isNotNull);
+      });
+    });
   });
 }

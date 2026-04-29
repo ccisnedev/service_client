@@ -250,4 +250,50 @@ describe('HttpServiceClient', () => {
     const client = new HttpServiceClient(config);
     await expect(client.close()).resolves.toBeUndefined();
   });
+
+  describe('client injection', () => {
+    it('accepts an injected fetch function', async () => {
+      const mockFetch = vi.fn().mockResolvedValue(mockResponse('{"id":1}', 200));
+
+      const client = new HttpServiceClient(config, { fetch: mockFetch });
+      const response = await client.send(
+        ServiceRequest.http({ method: 'GET', endpoint: 'todos/1' }),
+      );
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      expect(response.statusCode).toBe(200);
+      expect(response.data).toEqual({ id: 1 });
+    });
+
+    it('injected fetch receives correct URL and options', async () => {
+      const mockFetch = vi.fn().mockResolvedValue(mockResponse('{}', 200));
+
+      const client = new HttpServiceClient(config, { fetch: mockFetch });
+      await client.send(
+        ServiceRequest.http({
+          method: 'POST',
+          endpoint: 'todos',
+          body: { title: 'Test' },
+          headers: { Authorization: 'Bearer token' },
+        }),
+      );
+
+      const [url, init] = mockFetch.mock.calls[0];
+      expect(url).toBe('https://api.example.com/v1/todos');
+      expect(init.method).toBe('POST');
+      expect(init.headers['Authorization']).toBe('Bearer token');
+      expect(JSON.parse(init.body)).toEqual({ title: 'Test' });
+    });
+
+    it('uses global fetch when no injection is provided', async () => {
+      vi.mocked(fetch).mockResolvedValue(mockResponse('{}', 200));
+
+      const client = new HttpServiceClient(config);
+      await client.send(
+        ServiceRequest.http({ method: 'GET', endpoint: 'todos/1' }),
+      );
+
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
+  });
 });

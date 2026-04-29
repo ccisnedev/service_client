@@ -10,6 +10,6 @@ export {
 } from './core/service_client';
 
 /// http — client implementation
-export { HttpServiceClient } from './http/http_service_client';
+export { HttpServiceClient, type FetchFn } from './http/http_service_client';
 export { HttpClientException } from './http/http_client_exception';
 export { httpClient } from './http/http_client'; // deprecated — removal in v0.3.0

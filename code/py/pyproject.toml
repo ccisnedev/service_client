@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "macss-service-client"
-version = "0.2.0"
+version = "0.2.1"
 description = "Service client abstraction with the Result pattern for Python. Transport-agnostic interface with an HTTP implementation."
 readme = "README.md"
 license = "MIT"
@@ -31,10 +31,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/macss-dev/service_client"
-Repository = "https://github.com/macss-dev/service_client/tree/main/code/py"
-Issues = "https://github.com/macss-dev/service_client/issues"
-Documentation = "https://github.com/macss-dev/service_client/tree/main/code/py#readme"
+Homepage = "https://github.com/ccisnedev/service_client"
+Repository = "https://github.com/ccisnedev/service_client/tree/main/code/py"
+Issues = "https://github.com/ccisnedev/service_client/issues"
+Documentation = "https://github.com/ccisnedev/service_client/tree/main/code/py#readme"
 
 [tool.setuptools.packages.find]
 where = ["src"]
