@@ -1,0 +1,17 @@
+name: service_client
+description: A service client abstraction for Dart with the Result pattern. Includes an HTTP implementation.
+version: 0.2.1
+
+repository: https://github.com/ccisnedev/service_client/tree/main/code/dart
+homepage: https://github.com/ccisnedev/service_client
+issue_tracker: https://github.com/ccisnedev/service_client/issues
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  http: ^1.6.0
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.28.0
